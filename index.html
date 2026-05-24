@@ -363,6 +363,7 @@ header{
         <option>読込中...</option>
       </select>
     </div>
+    <button class="hbtn" id="voice-refresh-btn" onclick="forceReloadVoices()" title="音声リストを更新">🔄</button>
     <div class="hctrl">
       <label>速度:</label>
       <select class="rate-select" id="rate-select" onchange="onRateChange()">
@@ -630,6 +631,34 @@ function onVoiceChange() {
   const sel = document.getElementById('voice-select');
   selectedVoice = voices.find(v => v.name === sel.value) || voices[0];
   localStorage.setItem(LS_VOICE, sel.value);
+}
+
+// 🔄 音声リスト強制更新（iOSで新しい声をダウンロード後に使用）
+function forceReloadVoices() {
+  const btn = document.getElementById('voice-refresh-btn');
+  btn.textContent = '⏳';
+  btn.disabled = true;
+  // ダミー発話でSpeechSynthesisを起動
+  synth.cancel();
+  const dummy = new SpeechSynthesisUtterance('あ');
+  dummy.volume = 0;
+  dummy.onend = () => {
+    setTimeout(() => {
+      populateVoices();
+      btn.textContent = '🔄';
+      btn.disabled = false;
+      const count = synth.getVoices().filter(v => v.lang.startsWith('ja')).length;
+      alert(`日本語音声 ${count}件 読み込みました`);
+    }, 500);
+  };
+  dummy.onerror = () => {
+    setTimeout(() => {
+      populateVoices();
+      btn.textContent = '🔄';
+      btn.disabled = false;
+    }, 500);
+  };
+  synth.speak(dummy);
 }
 
 function onRateChange() {
