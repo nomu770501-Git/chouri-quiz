@@ -1,18 +1,9 @@
-const CACHE_NAME = 'chouri-quiz-v2';
-const FILES = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon.svg'
-];
-
+const CACHE_NAME = 'chouri-quiz-v3';
+const FILES = ['./', './index.html', './manifest.json', './icon.svg'];
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(c => c.addAll(FILES))
-  );
+  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(FILES)));
   self.skipWaiting();
 });
-
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -21,9 +12,6 @@ self.addEventListener('activate', e => {
   );
   self.clients.claim();
 });
-
 self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
-  );
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
 });
