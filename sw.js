@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chouri-quiz-v1';
+const CACHE_NAME = 'chouri-quiz-v2';
 const FILES = [
   './',
   './index.html',
